@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pickle
 import numpy as np
@@ -10,7 +9,7 @@ with open("wine_model.pkl", "rb") as f:
 st.set_page_config(page_title="Wine Classifier", page_icon="🍷", layout="wide")
 
 st.title("🍷 Wine Classification App")
-st.markdown("Nhập các **chỉ số hóa học** của rượu để dự đoán loại rượu.")
+st.markdown("Nhập các **chỉ số hóa học** để dự đoán **loại rượu (Class 0, 1 hoặc 2)**.")
 
 # Layout 3 cột nhập dữ liệu
 col1, col2, col3 = st.columns(3)
@@ -43,26 +42,20 @@ with center:
         features = np.array([[alcohol, malic_acid, ash, alcalinity, magnesium,
                               total_phenols, flavanoids, nonflavanoid_phenols,
                               proanthocyanins, color_intensity, hue, od280, proline]])
-        prediction = model.predict(features)[0]
+        prediction = int(model.predict(features)[0])
 
-        # Map class -> tên + icon + màu
-        wine_info = {
-            0: {"name": "Rượu vang đỏ", "icon": "🍷", "color": "#FF4B4B"},
-            1: {"name": "Rượu vang trắng", "icon": "🥂", "color": "#FFD700"},
-            2: {"name": "Rượu vang hồng", "icon": "🍾", "color": "#FF69B4"},
-        }
-
-        info = wine_info.get(prediction, {"name": "Không xác định", "icon": "❓", "color": "#CCCCCC"})
+        # Chỉ hiển thị Class + icon + màu
+        colors = ["#FF4B4B", "#FFD700", "#FF69B4"]  # đỏ, vàng, hồng
+        icons = ["🍷", "🥂", "🍾"]
 
         st.markdown(
             f"""
             <div style="padding:20px; border-radius:15px; text-align:center;
-                        background-color:{info['color']}; color:white; font-size:22px; font-weight:bold;">
-                {info['icon']} Kết quả dự đoán: {info['name']}
+                        background-color:{colors[prediction]}; color:white; font-size:22px; font-weight:bold;">
+                {icons[prediction]}  Kết quả dự đoán: Class {prediction}
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # Hiệu ứng vui mắt
         st.balloons()
